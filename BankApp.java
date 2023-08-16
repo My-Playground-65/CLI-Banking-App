@@ -26,6 +26,8 @@ public class BankApp{
         String screen = DASHBOARD;
         String[][] users = new String[0][];
 
+        System.out.println(users.length);
+
         mainloop:
 
         do{
@@ -62,11 +64,97 @@ public class BankApp{
                 }
                 break;
 
-                case CREATE_ACCOUNT:
+                case CREATE_ACCOUNT:{
+
+                    String id;
+                    String name;
+                    double balance;
+                    boolean valid;
 
                     //User ID generation
 
-                    
+                    id = String.format("SDB-%05d", (users.length+1));
+                    System.out.printf("SDB-%05d \n", (users.length+1));
+
+                    //Name Validation
+
+                    do{
+                        valid = true;
+
+                        System.out.print("Enter User Name : ");
+                        name = SCANNER.nextLine();
+
+                         /* Empty */
+                        if(name.isBlank()){
+                            System.out.printf(ERROR_MSG, "Username name can't be empty");
+                            valid = false;
+                            continue;
+                        }
+                        for (int i = 0; i < name.length(); i++) {
+                            if (!(Character.isLetter(name.charAt(i)) || 
+                                Character.isSpaceChar(name.charAt(i))) ) {
+                                System.out.printf(ERROR_MSG, "Invalid name");
+                                valid = false;
+                                break;
+                            }
+                        }
+                    }while(!valid);
+
+                    //Initial Deposit Validation
+
+                    double intialDepo = 0;
+
+                    do{
+                        valid = true;
+
+                        System.out.print("Initial Deposit : ");
+                        String strDepo = SCANNER.nextLine();
+                            
+                        if(strDepo.isBlank()){
+                            System.out.printf(ERROR_MSG, "Please enter an Initial amount");
+                            valid= false;
+                            continue;
+                        }
+                        intialDepo = Double.parseDouble(strDepo);
+
+                        if(intialDepo < 5000){
+                            System.out.printf(ERROR_MSG, "Insufficient Initial Deposit");
+                            valid = false;
+                            continue;
+                        }
+
+                    }while(!valid);
+
+                     /*
+                     * Now we have to store this new assignment marks,
+                     * So let's scale the `student` array by one
+                     */
+                    String[][] tempUsers = new String[users.length + 1][3];
+
+                    /*
+                     * Let's copy previous recrods from old `student` array to new `student` array
+                     */
+                    for (int i = 0; i < users.length; i++) {
+                        tempUsers[i] = users[i];
+                    }
+
+                    /* Let's add new assignment marks */
+                    tempUsers[tempUsers.length - 1][0] = id;
+                    tempUsers[tempUsers.length - 1][1] = name;
+                    tempUsers[tempUsers.length - 1][2] = intialDepo + " ";
+
+                    /* Let's swap arrays' memory locations */
+                    users = tempUsers;
+
+                    System.out.println();
+                    System.out.printf(SUCCESS_MSG, String.format("%s:%s added successfully \n", id, name));
+                    System.out.print("\tDo you want to continue adding marks? (Y/n)");
+                    if (!SCANNER.nextLine().toUpperCase().strip().equals("Y"))
+                        screen = DASHBOARD;
+                    break;
+
+                }
+
 
 
 
